@@ -6,7 +6,6 @@ import time
 import traceback
 from datetime import datetime
 from pprint import pprint
-from config import Config
 import json
 import shutil
 import subprocess
