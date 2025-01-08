@@ -56,6 +56,9 @@ class DB:
 def main():
     config = Config()
 
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+
     base_date = datetime.today().strftime("%Y-%m-%d")
 
     logger = init_logger(base_date)
