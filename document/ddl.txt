@@ -13,7 +13,7 @@ create or replace table notify
     modified datetime     null
 );
 
-create or replace table plans
+create or replace table tmp
 (
     id                  bigint auto_increment comment 'ID'
         primary key,
@@ -43,13 +43,13 @@ create or replace table plans
     comment '取得用';
 
 create or replace fulltext index ft_full_text
-    on plans (full_text);
+    on tmp (full_text);
 
 create or replace index ix_file
-    on plans (file);
+    on tmp (file);
 
 create or replace index ix_hotel_id
-    on plans (hotel_id);
+    on tmp (hotel_id);
 
 create or replace table plans_all
 (
@@ -92,7 +92,7 @@ create or replace index ix_file
 create or replace index ix_hotel_id
     on plans_all (hotel_id);
 
-create or replace table plans_search
+create or replace table plans
 (
     id                  bigint       not null comment 'ID'
         primary key,
@@ -124,14 +124,14 @@ create or replace table plans_search
     comment '検索用';
 
 create or replace fulltext index ft_full_text
-    on plans_search (full_text);
+    on plans (full_text);
 
 create or replace index ix_area_class
-    on plans_search (area_class);
+    on plans (area_class);
 
 create or replace index ix_file
-    on plans_search (file);
+    on plans (file);
 
 create or replace index ix_hotel_id
-    on plans_search (hotel_id);
+    on plans (hotel_id);
 

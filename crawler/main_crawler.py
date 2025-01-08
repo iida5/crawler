@@ -298,6 +298,9 @@ def main():
              
                     if crawl_count - crawler.request_count == 0:
                         logger.debug('finished')
+                        if config.execute_loop:
+                            logger.debug('execute_once')
+                            sys.exit()
                         
                 time.sleep(config.thread_wait)
             

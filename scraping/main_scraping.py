@@ -117,7 +117,7 @@ def main():
         total_execute_time = 0
         total_execute_count = 0
         parse = Parse()
-        sql = db.create_sql('plans')
+        sql = db.create_sql('tmp')
         insert_count = 0
         pre_db_connect = 0
 
@@ -163,7 +163,7 @@ def main():
                     insert_params = []
                     for file in crawled_files:
                         try:
-                            cursor.execute("delete from plans where file = %s", (file,))
+                            cursor.execute("delete from tmp where file = %s", (file,))
                             params = parse.html(base_date, file)
                             if params == False:
                                 raise Exception('parse error')
@@ -233,7 +233,7 @@ def main():
                     logger.debug('page average: {}'.format(round((total_execute_time / total_execute_count), 3)))
 
                     cursor = db.conn.cursor()
-                    cursor.execute('select count(id) from plans')
+                    cursor.execute('select count(id) from tmp')
                     plans_count = cursor.fetchone()
                     db.conn.commit()
                     logger.debug('db count: {}'.format(plans_count[0]))

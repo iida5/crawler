@@ -105,7 +105,7 @@ def main():
     dir = os.path.dirname(__file__)
     dump_path = '{}/files/{}.sql.gz'.format(dir, base_date)
 
-    subprocess.run(f"mysqldump -u {config.mysql_user} -p{config.mysql_password} {config.mysql_database} plans --skip-add-drop-table -t | gzip > {dump_path}", shell=True)
+    subprocess.run(f"mysqldump -u {config.mysql_user} -p{config.mysql_password} {config.mysql_database} tmp --skip-add-drop-table -t | gzip > {dump_path}", shell=True)
 
     logger.debug("[end] dump")
 
@@ -115,7 +115,7 @@ def main():
     try:
         sql = """
         INSERT IGNORE INTO plans_all
-        SELECT * FROM plans
+        SELECT * FROM tmp
         WHERE date = %s
         """
         cursor.execute(sql, (base_date, ))
@@ -131,19 +131,19 @@ def main():
 
     # insert search
     try:
-        cursor.execute("truncate plans_search")
+        cursor.execute("truncate plans")
         conn.commit()
 
         sql = """
-        INSERT IGNORE INTO plans_search
-        SELECT * FROM plans
+        INSERT IGNORE INTO plans
+        SELECT * FROM tmp
         WHERE date = %s
         """
         cursor.execute(sql, (base_date, ))
         conn.commit()
 
         sql = """
-        UPDATE plans_search SET 
+        UPDATE plans SET 
         full_text = concat(
             hotel_name, 
             ' ', 
@@ -158,7 +158,7 @@ def main():
         cursor.execute(sql)
         conn.commit()
 
-        cursor.execute("delete from plans")
+        cursor.execute("delete from tmp")
         conn.commit()
 
     except mysql.connector.Error as err:

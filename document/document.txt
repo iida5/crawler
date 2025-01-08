@@ -51,58 +51,14 @@ main_sing.py
 DB
 
 tableは下記の3つを同じ構造で作成
-・plans scrapingでinsert
+・tmp クロール中のデータ、scrapingでinsert
 ・plans_all すべてのデータが入る
-・plans_search 検索用 検索分のみのデータが入る
+・plans 検索用 検索分のみのデータが入る
 
-※ plans_searchには当日分のデータしか入れない、検索対象は最新のデータのみとなるため
+※ plans には当日分のデータしか入れない、検索対象は最新のデータのみとなるため
 
 ・各テーブルのindex
-plans以外はplansをもとにinsertするためauto_incrementは外す
-plansは下記を外す
-create fulltext index plans_full_text
-    on plans (full_text);
-
-・createtable
-
--- auto-generated definition
-create table plans
-(
-    id                  bigint auto_increment comment 'ID'
-        primary key,
-    hotel_name          varchar(255) null comment 'ホテル名',
-    hotel_address       varchar(255) null comment 'ホテル住所',
-    hotel_area          varchar(255) null comment 'ホテルエリア',
-    area_class          varchar(255) null comment 'エリア区分',
-    date                date         null comment '基準日',
-    hotel_id            varchar(20)  null comment 'ホテルID',
-    checkin             date         null comment 'チェックイン',
-    ppc                 int          null comment '人数',
-    room_id             varchar(20)  null comment '部屋ID',
-    room_name           varchar(255) null comment '部屋名',
-    room_type_code      varchar(3)   null comment '部屋タイプコード ("00": "シングル", "01": "ツイン", "02": "ダブル", "03": "トリプル", "04": "フォース", "05": "和室", "06": "和洋室", "07": "セミダブル", "08": "一等貸し", "99": "設定なし")',
-    room_smoking        varchar(3)   null comment '部屋喫煙 (0: "禁煙", 1: "喫煙")',
-    room_inventory      int          null comment '部屋在庫数',
-    plan_id             varchar(20)  null comment 'プランID',
-    plan_name           varchar(255) null comment 'プラン名',
-    plan_price          varchar(255) null comment 'プラン価格',
-    plan_discount_price int          null comment '割引価格',
-    plan_meal           varchar(3)   null comment 'プラン食事 ("000": "食事なし", "001": "朝食付", "002": "夕食付", "003": "夕朝食付", "004": "朝昼食付", "005": "昼食付", "006": "3食付", "007": "昼夕食付")',
-    file                varchar(255) null comment '取得元ファイル',
-    full_text           text         null comment '検索用 (ホテル名 ホテルエリア ホテル住所)',
-    modified            datetime     null comment '更新日時',
-    created             datetime     null comment '作成日時',
-    constraint plans_uk
-        unique (hotel_id, room_id, plan_id, checkin, ppc)
-)
-    comment '検索用';
-
-create index plans_file
-    on plans (file);
-
-create fulltext index plans_full_text
-    on plans (full_text);
-
-create index plans_hotel_id_index
-    on plans (hotel_id);
-
+tmp以外はtmpをもとにinsertするためauto_incrementは外す
+tmpは下記を外す
+create fulltext index tmp_full_text
+    on tmp (full_text);
