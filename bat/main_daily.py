@@ -59,6 +59,9 @@ def main():
     if not os.path.exists('logs'):
         os.makedirs('logs')
 
+    if not os.path.exists('files'):
+        os.makedirs('files')
+
     base_date = datetime.today().strftime("%Y-%m-%d")
 
     logger = init_logger(base_date)
