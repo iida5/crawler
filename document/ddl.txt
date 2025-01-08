@@ -1,0 +1,137 @@
+create or replace table notify
+(
+    id       int auto_increment
+        primary key,
+    hotel_id int          null,
+    room_id  int          null,
+    plan_id  int          null,
+    price    int          null,
+    email    varchar(255) null,
+    pushid   varchar(255) null,
+    sended   int          null,
+    created  datetime     null,
+    modified datetime     null
+);
+
+create or replace table plans
+(
+    id                  bigint auto_increment comment 'ID'
+        primary key,
+    hotel_name          varchar(255) null comment 'ホテル名',
+    hotel_address       varchar(255) null comment 'ホテル住所',
+    hotel_area          varchar(255) null comment 'ホテルエリア',
+    area_class          varchar(255) null comment 'エリア区分',
+    date                date         null comment '基準日',
+    hotel_id            varchar(20)  null comment 'ホテルID',
+    checkin             date         null comment 'チェックイン',
+    ppc                 int          null comment '人数',
+    room_id             varchar(20)  null comment '部屋ID',
+    room_name           varchar(255) null comment '部屋名',
+    room_type_code      varchar(3)   null comment '部屋タイプコード ("00": "シングル", "01": "ツイン", "02": "ダブル", "03": "トリプル", "04": "フォース", "05": "和室", "06": "和洋室", "07": "セミダブル", "08": "一等貸し", "99": "設定なし")',
+    room_smoking        varchar(3)   null comment '部屋喫煙 (0: "禁煙", 1: "喫煙")',
+    room_inventory      int          null comment '部屋在庫数',
+    plan_id             varchar(20)  null comment 'プランID',
+    plan_name           varchar(255) null comment 'プラン名',
+    plan_price          varchar(255) null comment 'プラン価格',
+    plan_discount_price int          null comment '割引価格',
+    plan_meal           varchar(3)   null comment 'プラン食事 ("000": "食事なし", "001": "朝食付", "002": "夕食付", "003": "夕朝食付", "004": "朝昼食付", "005": "昼食付", "006": "3食付", "007": "昼夕食付")',
+    file                varchar(255) null comment '取得元ファイル',
+    full_text           text         null comment '検索用 (ホテル名 ホテルエリア ホテル住所)',
+    modified            datetime     null comment '更新日時',
+    created             datetime     null comment '作成日時'
+)
+    comment '取得用';
+
+create or replace fulltext index ft_full_text
+    on plans (full_text);
+
+create or replace index ix_file
+    on plans (file);
+
+create or replace index ix_hotel_id
+    on plans (hotel_id);
+
+create or replace table plans_all
+(
+    id                  bigint       not null comment 'ID'
+        primary key,
+    hotel_name          varchar(255) null comment 'ホテル名',
+    hotel_address       varchar(255) null comment 'ホテル住所',
+    hotel_area          varchar(255) null comment 'ホテルエリア',
+    area_class          varchar(255) null comment 'エリア区分',
+    date                date         null comment '基準日',
+    hotel_id            varchar(20)  null comment 'ホテルID',
+    checkin             date         null comment 'チェックイン',
+    ppc                 int          null comment '人数',
+    room_id             varchar(20)  null comment '部屋ID',
+    room_name           varchar(255) null comment '部屋名',
+    room_type_code      varchar(3)   null comment '部屋タイプコード ("00": "シングル", "01": "ツイン", "02": "ダブル", "03": "トリプル", "04": "フォース", "05": "和室", "06": "和洋室", "07": "セミダブル", "08": "一等貸し", "99": "設定なし")',
+    room_smoking        varchar(3)   null comment '部屋喫煙 (0: "禁煙", 1: "喫煙")',
+    room_inventory      int          null comment '部屋在庫数',
+    plan_id             varchar(20)  null comment 'プランID',
+    plan_name           varchar(255) null comment 'プラン名',
+    plan_price          varchar(255) null comment 'プラン価格',
+    plan_discount_price int          null comment '割引価格',
+    plan_meal           varchar(3)   null comment 'プラン食事 ("000": "食事なし", "001": "朝食付", "002": "夕食付", "003": "夕朝食付", "004": "朝昼食付", "005": "昼食付", "006": "3食付", "007": "昼夕食付")',
+    file                varchar(255) null comment '取得元ファイル',
+    full_text           text         null comment '検索用 (ホテル名 ホテルエリア ホテル住所)',
+    modified            datetime     null comment '更新日時',
+    created             datetime     null comment '作成日時'
+)
+    comment '履歴用';
+
+create or replace fulltext index ft_full_text
+    on plans_all (full_text);
+
+create or replace index ix_date
+    on plans_all (date);
+
+create or replace index ix_file
+    on plans_all (file);
+
+create or replace index ix_hotel_id
+    on plans_all (hotel_id);
+
+create or replace table plans_search
+(
+    id                  bigint       not null comment 'ID'
+        primary key,
+    hotel_name          varchar(255) null comment 'ホテル名',
+    hotel_address       varchar(255) null comment 'ホテル住所',
+    hotel_area          varchar(255) null comment 'ホテルエリア',
+    area_class          varchar(255) null comment 'エリア区分',
+    date                date         null comment '基準日',
+    hotel_id            varchar(20)  null comment 'ホテルID',
+    checkin             date         null comment 'チェックイン',
+    ppc                 int          null comment '人数',
+    room_id             varchar(20)  null comment '部屋ID',
+    room_name           varchar(255) null comment '部屋名',
+    room_type_code      varchar(3)   null comment '部屋タイプコード ("00": "シングル", "01": "ツイン", "02": "ダブル", "03": "トリプル", "04": "フォース", "05": "和室", "06": "和洋室", "07": "セミダブル", "08": "一等貸し", "99": "設定なし")',
+    room_smoking        varchar(3)   null comment '部屋喫煙 (0: "禁煙", 1: "喫煙")',
+    room_inventory      int          null comment '部屋在庫数',
+    plan_id             varchar(20)  null comment 'プランID',
+    plan_name           varchar(255) null comment 'プラン名',
+    plan_price          varchar(255) null comment 'プラン価格',
+    plan_discount_price int          null comment '割引価格',
+    plan_meal           varchar(3)   null comment 'プラン食事 ("000": "食事なし", "001": "朝食付", "002": "夕食付", "003": "夕朝食付", "004": "朝昼食付", "005": "昼食付", "006": "3食付", "007": "昼夕食付")',
+    file                varchar(255) null comment '取得元ファイル',
+    full_text           text         null comment '検索用 (ホテル名 ホテルエリア ホテル住所)',
+    modified            datetime     null comment '更新日時',
+    created             datetime     null comment '作成日時',
+    constraint uk_plan
+        unique (hotel_id, room_id, plan_id, checkin, ppc)
+)
+    comment '検索用';
+
+create or replace fulltext index ft_full_text
+    on plans_search (full_text);
+
+create or replace index ix_area_class
+    on plans_search (area_class);
+
+create or replace index ix_file
+    on plans_search (file);
+
+create or replace index ix_hotel_id
+    on plans_search (hotel_id);
+

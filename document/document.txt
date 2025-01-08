@@ -1,0 +1,103 @@
+------------------------
+動作方法
+
+# crontablに下記を設定
+crontab -e
+*/10 * * * cd /home/ec2-user/bot/v2/bat; /home/ec2-user/.pyenv/shims/python /home/ec2-user/bot/v2/bat/main_daily.py
+
+# 下記を実行
+nohup python -u main_crawler.py &
+nohup python -u main_scraping.py &
+
+------------------------
+動作の流れ
+
+・main_crawler.py
+毎日00時から取得開始、03時頃までには終わる予定。
+対象のホテル(hotels.csv)を毎日巡回してデータをplansに保存します。
+対象ホテルの本日～60日、人数1～4 でパラメーターを変え取得。
+取得したページを data/本日/file/ 以下に保存します。
+
+・main_scraping.py
+date/本日/file/ 以下にあるファイルを存在確認し、ファイルがある場合plansにデータを保存します。
+
+・main_daily.py(cron)
+plansの内容をplans_searchにinsertします。
+plansの内容をplans_allにinsertします。
+plansをtruncateします。
+
+・crawler_checker
+データ取得チェック用プログラム集
+
+main_clear.py
+data 以下にあるファイルをくりあします。
+
+main_crawler.py
+data にクロールしてファイルを保存します。1ホテル1ページのみ。
+
+main_scraping.py
+dataにあるファイルをscrapingします。
+successの場合 data/success にファイル移動
+
+main_sing.py
+解析失敗ファイル(data/successに移動しないファイル)を指定してチェック
+
+------------------------
+DB
+
+tableは下記の3つを同じ構造で作成
+・plans scrapingでinsert
+・plans_all すべてのデータが入る
+・plans_search 検索用 検索分のみのデータが入る
+
+※ plans_searchには当日分のデータしか入れない、検索対象は最新のデータのみとなるため
+
+・各テーブルのindex
+plans以外はplansをもとにinsertするためauto_incrementは外す
+plansは下記を外す
+create fulltext index plans_full_text
+    on plans (full_text);
+
+・createtable
+
+-- auto-generated definition
+create table plans
+(
+    id                  bigint auto_increment comment 'ID'
+        primary key,
+    hotel_name          varchar(255) null comment 'ホテル名',
+    hotel_address       varchar(255) null comment 'ホテル住所',
+    hotel_area          varchar(255) null comment 'ホテルエリア',
+    area_class          varchar(255) null comment 'エリア区分',
+    date                date         null comment '基準日',
+    hotel_id            varchar(20)  null comment 'ホテルID',
+    checkin             date         null comment 'チェックイン',
+    ppc                 int          null comment '人数',
+    room_id             varchar(20)  null comment '部屋ID',
+    room_name           varchar(255) null comment '部屋名',
+    room_type_code      varchar(3)   null comment '部屋タイプコード ("00": "シングル", "01": "ツイン", "02": "ダブル", "03": "トリプル", "04": "フォース", "05": "和室", "06": "和洋室", "07": "セミダブル", "08": "一等貸し", "99": "設定なし")',
+    room_smoking        varchar(3)   null comment '部屋喫煙 (0: "禁煙", 1: "喫煙")',
+    room_inventory      int          null comment '部屋在庫数',
+    plan_id             varchar(20)  null comment 'プランID',
+    plan_name           varchar(255) null comment 'プラン名',
+    plan_price          varchar(255) null comment 'プラン価格',
+    plan_discount_price int          null comment '割引価格',
+    plan_meal           varchar(3)   null comment 'プラン食事 ("000": "食事なし", "001": "朝食付", "002": "夕食付", "003": "夕朝食付", "004": "朝昼食付", "005": "昼食付", "006": "3食付", "007": "昼夕食付")',
+    file                varchar(255) null comment '取得元ファイル',
+    full_text           text         null comment '検索用 (ホテル名 ホテルエリア ホテル住所)',
+    modified            datetime     null comment '更新日時',
+    created             datetime     null comment '作成日時',
+    constraint plans_uk
+        unique (hotel_id, room_id, plan_id, checkin, ppc)
+)
+    comment '検索用';
+
+create index plans_file
+    on plans (file);
+
+create fulltext index plans_full_text
+    on plans (full_text);
+
+create index plans_hotel_id_index
+    on plans (hotel_id);
+

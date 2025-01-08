@@ -1,0 +1,24 @@
+# python
+**/__pycache__/**
+
+# config
+config
+
+# ログ or data
+data
+logs
+*.log
+*.json
+tmp
+hotel/html/*
+hotels/pages/*.html
+hotels/hotels/*.html
+dump
+bat/files/*.sql.gz
+hotel_lists.txt
+hotels.txt
+
+# etc
+_backup
+.vscode
+nohup.out

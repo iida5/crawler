@@ -1,0 +1,16 @@
+hotels
+
+1. get_page.py を実行しホテル一覧のページを取得
+   pageにファイルが作成される
+   → accommodation_typesが変わる場合があるので一休上で確認
+   → 5行目のrangeを上記の結果により変える
+
+2. get_hotel_lists.py を実行しホテル一覧のURLを抽出
+   hotel_lists.txt にファイルが作成される
+
+3. get_hotels.py を実行しホテルのページを取得
+   hotels にファイルが作成される
+
+4. scraping.py を実行しホテルのページからホテル情報を出力
+   hotels.txt にファイルが作成される
+
