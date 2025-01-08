@@ -204,8 +204,7 @@ def main():
     try:
         start = time.time()
         config = Config()
-        print(config.date_limit)
-        sys.exit()
+
         base_date = ''
         loop_count = 0
         total_execute_time = 0
