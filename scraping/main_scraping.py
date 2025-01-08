@@ -121,6 +121,9 @@ def main():
         insert_count = 0
         pre_db_connect = 0
 
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
+
         while True:
             try:
                 loop_count += 1

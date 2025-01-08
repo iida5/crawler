@@ -209,6 +209,10 @@ def main():
         loop_count = 0
         total_execute_time = 0
         total_execute_count = 0
+        
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
+
         while True:
             try:
                 if base_date != datetime.today().strftime("%Y-%m-%d"):
